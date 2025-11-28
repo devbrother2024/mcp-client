@@ -78,7 +78,13 @@ export function MCPResourcesPanel({ serverId }: MCPResourcesPanelProps) {
       <div className="w-1/3 min-w-[200px]">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-sm font-medium">리소스 목록</h3>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={fetchResources} disabled={isLoading}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={fetchResources}
+            disabled={isLoading}
+          >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
@@ -89,13 +95,15 @@ export function MCPResourcesPanel({ serverId }: MCPResourcesPanelProps) {
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           ) : resources.length === 0 ? (
-            <p className="text-muted-foreground py-4 text-center text-sm">등록된 리소스가 없습니다</p>
+            <p className="text-muted-foreground py-4 text-center text-sm">
+              등록된 리소스가 없습니다
+            </p>
           ) : (
             <div className="space-y-1">
               {resources.map((resource) => (
                 <div
                   key={resource.uri}
-                  className={`cursor-pointer rounded-md p-2 transition-colors hover:bg-accent ${
+                  className={`hover:bg-accent cursor-pointer rounded-md p-2 transition-colors ${
                     selectedResource?.uri === resource.uri ? 'bg-accent' : ''
                   }`}
                   onClick={() => handleSelectResource(resource)}
@@ -121,8 +129,10 @@ export function MCPResourcesPanel({ serverId }: MCPResourcesPanelProps) {
         {selectedResource ? (
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-lg">{selectedResource.name || selectedResource.uri}</CardTitle>
-              <p className="text-muted-foreground break-all text-sm">{selectedResource.uri}</p>
+              <CardTitle className="text-lg">
+                {selectedResource.name || selectedResource.uri}
+              </CardTitle>
+              <p className="text-muted-foreground text-sm break-all">{selectedResource.uri}</p>
               {selectedResource.description && (
                 <p className="text-muted-foreground text-sm">{selectedResource.description}</p>
               )}
@@ -149,7 +159,9 @@ export function MCPResourcesPanel({ serverId }: MCPResourcesPanelProps) {
 
               {/* Error */}
               {error && (
-                <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
+                <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
+                  {error}
+                </div>
               )}
 
               {/* Content */}
@@ -159,10 +171,14 @@ export function MCPResourcesPanel({ serverId }: MCPResourcesPanelProps) {
                   {content.map((item, idx) => (
                     <div key={idx} className="bg-muted rounded-md p-3">
                       {item.mimeType && (
-                        <span className="text-muted-foreground mb-1 block text-xs">{item.mimeType}</span>
+                        <span className="text-muted-foreground mb-1 block text-xs">
+                          {item.mimeType}
+                        </span>
                       )}
                       {item.text ? (
-                        <pre className="overflow-x-auto whitespace-pre-wrap text-sm">{item.text}</pre>
+                        <pre className="overflow-x-auto text-sm whitespace-pre-wrap">
+                          {item.text}
+                        </pre>
                       ) : item.blob ? (
                         <p className="text-muted-foreground text-sm">
                           [Binary data: {item.blob.length} bytes]

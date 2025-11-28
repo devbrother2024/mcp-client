@@ -1,6 +1,22 @@
+export interface ToolCallImage {
+  data?: string; // base64 encoded (실시간 표시용, 저장 후 제거)
+  url?: string; // Storage URL (저장 후 사용)
+  mimeType: string;
+}
+
+export interface ToolCall {
+  name: string;
+  args: Record<string, unknown>;
+  result?: string;
+  images?: ToolCallImage[];
+  serverId?: string;
+  duration?: number;
+}
+
 export interface Message {
   role: 'user' | 'model';
   parts: [{ text: string }];
+  toolCalls?: ToolCall[];
 }
 
 export interface ChatRoom {

@@ -29,15 +29,8 @@ import { cn } from '@/lib/utils';
 type TabType = 'tools' | 'prompts' | 'resources';
 
 export default function MCPPage() {
-  const {
-    servers,
-    connectionStatus,
-    addServer,
-    updateServer,
-    removeServer,
-    connect,
-    disconnect,
-  } = useMCP();
+  const { servers, connectionStatus, addServer, updateServer, removeServer, connect, disconnect } =
+    useMCP();
 
   const [showForm, setShowForm] = useState(false);
   const [editingServer, setEditingServer] = useState<MCPServerConfig | null>(null);
@@ -49,9 +42,7 @@ export default function MCPPage() {
   const selectedServer = servers.find((s) => s.id === selectedServerId);
   const selectedServerStatus = selectedServerId ? connectionStatus.get(selectedServerId) : null;
 
-  const handleAddServer = (
-    data: Omit<MCPServerConfig, 'id' | 'createdAt' | 'updatedAt'>
-  ) => {
+  const handleAddServer = (data: Omit<MCPServerConfig, 'id' | 'createdAt' | 'updatedAt'>) => {
     addServer(data);
     setShowForm(false);
   };
@@ -107,15 +98,19 @@ export default function MCPPage() {
             </Link>
             <h1 className="text-lg font-semibold">MCP 서버</h1>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => setShowConfigDialog(true)} title="설정">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowConfigDialog(true)}
+            title="설정"
+          >
             <Settings className="h-4 w-4" />
           </Button>
         </div>
 
         <div className="p-4">
           <Button onClick={() => setShowForm(true)} className="w-full">
-            <Plus className="mr-2 h-4 w-4" />
-            새 서버 등록
+            <Plus className="mr-2 h-4 w-4" />새 서버 등록
           </Button>
         </div>
 
@@ -229,7 +224,8 @@ export default function MCPPage() {
                     <AlertCircle className="text-muted-foreground mx-auto mb-4 h-12 w-12 opacity-50" />
                     <h3 className="mb-2 text-lg font-medium">서버에 연결되어 있지 않습니다</h3>
                     <p className="text-muted-foreground mb-4 text-sm">
-                      서버에 연결한 후 {tabs.find((t) => t.id === activeTab)?.label}를 확인할 수 있습니다.
+                      서버에 연결한 후 {tabs.find((t) => t.id === activeTab)?.label}를 확인할 수
+                      있습니다.
                     </p>
                     <Button
                       onClick={() => handleConnect(selectedServer.id)}

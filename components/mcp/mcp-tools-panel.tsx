@@ -81,7 +81,12 @@ export function MCPToolsPanel({ serverId }: MCPToolsPanelProps) {
     }
   };
 
-  const getInputFields = (): Array<{ name: string; type: string; description?: string; required?: boolean }> => {
+  const getInputFields = (): Array<{
+    name: string;
+    type: string;
+    description?: string;
+    required?: boolean;
+  }> => {
     if (!selectedTool?.inputSchema) return [];
 
     const schema = selectedTool.inputSchema as {
@@ -114,7 +119,13 @@ export function MCPToolsPanel({ serverId }: MCPToolsPanelProps) {
       <div className="w-1/3 min-w-[200px]">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-sm font-medium">도구 목록</h3>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={fetchTools} disabled={isLoading}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={fetchTools}
+            disabled={isLoading}
+          >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
@@ -131,7 +142,7 @@ export function MCPToolsPanel({ serverId }: MCPToolsPanelProps) {
               {tools.map((tool) => (
                 <div
                   key={tool.name}
-                  className={`cursor-pointer rounded-md p-2 transition-colors hover:bg-accent ${
+                  className={`hover:bg-accent cursor-pointer rounded-md p-2 transition-colors ${
                     selectedTool?.name === tool.name ? 'bg-accent' : ''
                   }`}
                   onClick={() => handleSelectTool(tool)}
@@ -199,14 +210,18 @@ export function MCPToolsPanel({ serverId }: MCPToolsPanelProps) {
 
               {/* Error */}
               {error && (
-                <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
+                <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
+                  {error}
+                </div>
               )}
 
               {/* Result */}
               {result && (
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium">실행 결과</h4>
-                  <div className={`rounded-md p-3 text-sm ${result.isError ? 'bg-destructive/10' : 'bg-muted'}`}>
+                  <div
+                    className={`rounded-md p-3 text-sm ${result.isError ? 'bg-destructive/10' : 'bg-muted'}`}
+                  >
                     {result.content.map((item, idx) => (
                       <div key={idx} className="mb-2 last:mb-0">
                         {item.type === 'image' && item.data ? (

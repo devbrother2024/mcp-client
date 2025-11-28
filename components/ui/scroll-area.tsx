@@ -13,12 +13,12 @@ function ScrollArea({
   return (
     <ScrollAreaPrimitive.Root
       data-slot="scroll-area"
-      className={cn('relative', className)}
+      className={cn('relative overflow-hidden', className)}
       {...props}
     >
       <ScrollAreaPrimitive.Viewport
         data-slot="scroll-area-viewport"
-        className="size-full rounded-[inherit] transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.65_0.25_280_/_0.3)]"
+        className="h-full w-full rounded-[inherit] transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.65_0.25_280_/_0.3)] [&>div]:!block"
       >
         {children}
       </ScrollAreaPrimitive.Viewport>

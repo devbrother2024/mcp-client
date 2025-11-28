@@ -9,13 +9,17 @@ import type { MCPServerConfig, TransportType } from '@/lib/mcp-types';
 
 interface MCPServerFormProps {
   initialData?: MCPServerConfig;
-  onSubmit: (data: Omit<MCPServerConfig, 'id' | 'createdAt' | 'updatedAt'> | MCPServerConfig) => void;
+  onSubmit: (
+    data: Omit<MCPServerConfig, 'id' | 'createdAt' | 'updatedAt'> | MCPServerConfig
+  ) => void;
   onCancel?: () => void;
 }
 
 export function MCPServerForm({ initialData, onSubmit, onCancel }: MCPServerFormProps) {
   const [name, setName] = useState(initialData?.name || '');
-  const [transportType, setTransportType] = useState<TransportType>(initialData?.transportType || 'stdio');
+  const [transportType, setTransportType] = useState<TransportType>(
+    initialData?.transportType || 'stdio'
+  );
   const [command, setCommand] = useState(initialData?.command || '');
   const [args, setArgs] = useState<string[]>(initialData?.args || []);
   const [envVars, setEnvVars] = useState<Array<{ key: string; value: string }>>(
@@ -64,7 +68,9 @@ export function MCPServerForm({ initialData, onSubmit, onCancel }: MCPServerForm
     const filteredArgs = args.filter((arg) => arg.trim() !== '');
 
     const data = {
-      ...(initialData ? { id: initialData.id, createdAt: initialData.createdAt, updatedAt: Date.now() } : {}),
+      ...(initialData
+        ? { id: initialData.id, createdAt: initialData.createdAt, updatedAt: Date.now() }
+        : {}),
       name: name.trim(),
       transportType,
       ...(transportType === 'stdio'
@@ -81,9 +87,7 @@ export function MCPServerForm({ initialData, onSubmit, onCancel }: MCPServerForm
     onSubmit(data as MCPServerConfig);
   };
 
-  const isValid =
-    name.trim() &&
-    (transportType === 'stdio' ? command.trim() : url.trim());
+  const isValid = name.trim() && (transportType === 'stdio' ? command.trim() : url.trim());
 
   return (
     <Card>
@@ -144,7 +148,12 @@ export function MCPServerForm({ initialData, onSubmit, onCancel }: MCPServerForm
                         onChange={(e) => handleArgChange(index, e.target.value)}
                         placeholder={`Argument ${index + 1}`}
                       />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveArg(index)}>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveArg(index)}
+                      >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
@@ -173,7 +182,12 @@ export function MCPServerForm({ initialData, onSubmit, onCancel }: MCPServerForm
                         placeholder="value"
                         className="flex-1"
                       />
-                      <Button type="button" variant="ghost" size="icon" onClick={() => handleRemoveEnvVar(index)}>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveEnvVar(index)}
+                      >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>

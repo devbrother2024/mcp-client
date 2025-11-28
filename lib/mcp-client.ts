@@ -158,13 +158,24 @@ class MCPClientManager {
     };
   }
 
-  // Get client for a server
+  // Get client for a server (internal use)
   private getClient(serverId: string): Client {
     const instance = this.clients.get(serverId);
     if (!instance) {
       throw new Error(`Server ${serverId} is not connected`);
     }
     return instance.client;
+  }
+
+  // Get raw client instance for mcpToTool (external use)
+  getClientInstance(serverId: string): Client | null {
+    const instance = this.clients.get(serverId);
+    return instance ? instance.client : null;
+  }
+
+  // Get all connected client instances for mcpToTool
+  getAllClientInstances(): Client[] {
+    return Array.from(this.clients.values()).map((instance) => instance.client);
   }
 
   // List tools from a server
@@ -190,21 +201,34 @@ class MCPClientManager {
       arguments: args || {},
     });
 
+    const contentArray = Array.isArray(result.content) ? result.content : [];
+
     return {
-      content: result.content.map((item) => {
-        if (item.type === 'text') {
-          return { type: 'text', text: item.text };
-        } else if (item.type === 'image') {
-          return { type: 'image', data: item.data, mimeType: item.mimeType };
-        } else if (item.type === 'resource') {
-          return {
-            type: 'resource',
-            text: typeof item.resource === 'object' ? JSON.stringify(item.resource) : String(item.resource),
-          };
+      content: contentArray.map(
+        (item: {
+          type: string;
+          text?: string;
+          data?: string;
+          mimeType?: string;
+          resource?: unknown;
+        }) => {
+          if (item.type === 'text') {
+            return { type: 'text', text: item.text };
+          } else if (item.type === 'image') {
+            return { type: 'image', data: item.data, mimeType: item.mimeType };
+          } else if (item.type === 'resource') {
+            return {
+              type: 'resource',
+              text:
+                typeof item.resource === 'object'
+                  ? JSON.stringify(item.resource)
+                  : String(item.resource),
+            };
+          }
+          return { type: item.type };
         }
-        return { type: item.type };
-      }),
-      isError: result.isError,
+      ),
+      isError: result.isError === true,
     };
   }
 
@@ -240,7 +264,8 @@ class MCPClientManager {
       messages: result.messages.map((msg) => ({
         role: msg.role,
         content: {
-          type: typeof msg.content === 'object' && 'type' in msg.content ? msg.content.type : 'text',
+          type:
+            typeof msg.content === 'object' && 'type' in msg.content ? msg.content.type : 'text',
           text:
             typeof msg.content === 'string'
               ? msg.content

@@ -23,7 +23,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('MCP list resources error:', error);
     return NextResponse.json<MCPApiResponse<null>>(
-      { success: false, error: error instanceof Error ? error.message : 'Failed to list resources' },
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to list resources',
+      },
       { status: 500 }
     );
   }

@@ -13,13 +13,43 @@ import { ChatSidebar } from '@/components/chat-sidebar';
 import {
   Message,
   ChatRoom,
+  ToolCall,
   getChatRooms,
   getChatRoom,
   createChatRoom,
   updateChatRoom,
   deleteChatRoom,
 } from '@/lib/chat-storage';
+import { ToolCallList } from '@/components/tool-call-card';
 import { cn } from '@/lib/utils';
+
+// SSE Event types
+interface SSEToolCallEvent {
+  type: 'tool_call';
+  data: ToolCall;
+}
+
+interface SSEToolResultEvent {
+  type: 'tool_result';
+  data: ToolCall;
+}
+
+interface SSETextEvent {
+  type: 'text';
+  data: string;
+}
+
+interface SSEErrorEvent {
+  type: 'error';
+  data: string;
+}
+
+interface SSEDoneEvent {
+  type: 'done';
+  data: { toolCalls: ToolCall[] };
+}
+
+type SSEEvent = SSEToolCallEvent | SSEToolResultEvent | SSETextEvent | SSEErrorEvent | SSEDoneEvent;
 
 // Code block component with copy button
 function CodeBlock({
@@ -63,7 +93,7 @@ function CodeBlock({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 gap-1.5 px-2 text-xs text-[oklch(0.6_0.02_260)] hover:text-foreground"
+            className="hover:text-foreground h-7 gap-1.5 px-2 text-xs text-[oklch(0.6_0.02_260)]"
             onClick={handleCopy}
             title="코드 복사"
           >
@@ -152,6 +182,31 @@ export default function Home() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Parse SSE events from a chunk
+  const parseSSEEvents = (chunk: string): SSEEvent[] => {
+    const events: SSEEvent[] = [];
+    const lines = chunk.split('\n');
+    let currentEvent: { type?: string; data?: string } = {};
+
+    for (const line of lines) {
+      if (line.startsWith('event: ')) {
+        currentEvent.type = line.slice(7);
+      } else if (line.startsWith('data: ')) {
+        currentEvent.data = line.slice(6);
+      } else if (line === '' && currentEvent.type && currentEvent.data) {
+        try {
+          const parsed = JSON.parse(currentEvent.data);
+          events.push({ type: currentEvent.type, data: parsed } as SSEEvent);
+        } catch {
+          // Invalid JSON, skip
+        }
+        currentEvent = {};
+      }
+    }
+
+    return events;
+  };
+
   const handleSend = async () => {
     // Read value directly from DOM for browser automation compatibility
     const inputValue = inputRef.current?.value || input;
@@ -193,38 +248,106 @@ export default function Home() {
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let assistantText = '';
+      let currentToolCalls: ToolCall[] = [];
 
       // Create assistant message placeholder
       const assistantMessage: Message = {
         role: 'model',
         parts: [{ text: '' }],
+        toolCalls: [],
       };
       const messagesWithAssistant = [...newMessages, assistantMessage];
       setMessages(messagesWithAssistant);
 
       // Stream the response
+      let buffer = '';
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value, { stream: true });
-        assistantText += chunk;
+        buffer += decoder.decode(value, { stream: true });
 
-        // Update the assistant message with accumulated text
-        setMessages((prev) => {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            role: 'model',
-            parts: [{ text: assistantText }],
-          };
-          return updated;
-        });
+        // Process complete events
+        const events = parseSSEEvents(buffer);
+
+        // Keep incomplete data in buffer
+        const lastNewline = buffer.lastIndexOf('\n\n');
+        if (lastNewline !== -1) {
+          buffer = buffer.slice(lastNewline + 2);
+        }
+
+        for (const event of events) {
+          switch (event.type) {
+            case 'tool_call':
+              currentToolCalls.push(event.data as ToolCall);
+              // Update message with tool calls
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  role: 'model',
+                  parts: [{ text: assistantText }],
+                  toolCalls: [...currentToolCalls],
+                };
+                return updated;
+              });
+              break;
+
+            case 'tool_result': {
+              // Update the last tool call with result
+              const resultData = event.data as ToolCall;
+              const toolIndex = currentToolCalls.findIndex(
+                (tc) => tc.name === resultData.name && !tc.result
+              );
+              if (toolIndex !== -1) {
+                currentToolCalls[toolIndex] = { ...currentToolCalls[toolIndex], ...resultData };
+              }
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  role: 'model',
+                  parts: [{ text: assistantText }],
+                  toolCalls: [...currentToolCalls],
+                };
+                return updated;
+              });
+              break;
+            }
+
+            case 'text':
+              assistantText += event.data as string;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  role: 'model',
+                  parts: [{ text: assistantText }],
+                  toolCalls: currentToolCalls.length > 0 ? currentToolCalls : undefined,
+                };
+                return updated;
+              });
+              break;
+
+            case 'error':
+              throw new Error(event.data as string);
+
+            case 'done':
+              // Final update with tool calls from done event
+              const doneData = event.data as { toolCalls: ToolCall[] };
+              if (doneData.toolCalls && doneData.toolCalls.length > 0) {
+                currentToolCalls = doneData.toolCalls;
+              }
+              break;
+          }
+        }
       }
 
       // Save to database after streaming is complete
       const finalMessages: Message[] = [
         ...newMessages,
-        { role: 'model', parts: [{ text: assistantText }] },
+        {
+          role: 'model',
+          parts: [{ text: assistantText }],
+          toolCalls: currentToolCalls.length > 0 ? currentToolCalls : undefined,
+        },
       ];
       await updateChatRoom(currentRoomId, finalMessages);
 
@@ -288,11 +411,11 @@ export default function Home() {
   // Show loading state while initializing
   if (isInitializing) {
     return (
-      <div className="relative flex h-screen items-center justify-center overflow-hidden bg-background">
+      <div className="bg-background relative flex h-screen items-center justify-center overflow-hidden">
         {/* Background gradient orbs */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-[oklch(0.65_0.25_280_/_0.15)] blur-[100px]" />
-          <div className="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-[oklch(0.75_0.18_195_/_0.15)] blur-[100px]" />
+          <div className="absolute -top-40 -left-40 h-80 w-80 rounded-full bg-[oklch(0.65_0.25_280_/_0.15)] blur-[100px]" />
+          <div className="absolute -right-40 -bottom-40 h-80 w-80 rounded-full bg-[oklch(0.75_0.18_195_/_0.15)] blur-[100px]" />
         </div>
         <div className="relative z-10 text-center">
           <div className="relative mx-auto mb-6 h-12 w-12">
@@ -308,12 +431,12 @@ export default function Home() {
   }
 
   return (
-    <div className="relative flex h-screen overflow-hidden bg-background">
+    <div className="bg-background relative flex h-screen overflow-hidden">
       {/* Background gradient effects */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-60 top-1/4 h-[500px] w-[500px] rounded-full bg-[oklch(0.65_0.25_280_/_0.08)] blur-[120px]" />
+        <div className="absolute top-1/4 -left-60 h-[500px] w-[500px] rounded-full bg-[oklch(0.65_0.25_280_/_0.08)] blur-[120px]" />
         <div className="absolute -right-60 bottom-1/4 h-[500px] w-[500px] rounded-full bg-[oklch(0.75_0.18_195_/_0.08)] blur-[120px]" />
-        <div className="absolute left-1/2 top-0 h-[300px] w-[800px] -translate-x-1/2 rounded-full bg-[oklch(0.7_0.2_200_/_0.05)] blur-[100px]" />
+        <div className="absolute top-0 left-1/2 h-[300px] w-[800px] -translate-x-1/2 rounded-full bg-[oklch(0.7_0.2_200_/_0.05)] blur-[100px]" />
       </div>
 
       {/* Sidebar */}
@@ -370,7 +493,10 @@ export default function Home() {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={cn('flex gap-4', message.role === 'user' ? 'justify-end' : 'justify-start')}
+                className={cn(
+                  'flex gap-4',
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                )}
               >
                 {message.role === 'model' && (
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] to-[oklch(0.75_0.18_195)]">
@@ -378,96 +504,108 @@ export default function Home() {
                   </div>
                 )}
 
-                <Card
-                  className={cn(
-                    'max-w-[85%] border transition-all duration-300',
-                    message.role === 'user'
-                      ? 'bg-gradient-to-br from-[oklch(0.65_0.25_280_/_0.2)] to-[oklch(0.6_0.22_300_/_0.2)] border-[oklch(0.5_0.15_280_/_0.3)]'
-                      : 'bg-[oklch(0.16_0.01_260_/_0.6)] border-[oklch(0.25_0.02_260_/_0.4)]'
-                  )}
-                >
-                  <CardContent className="p-4">
-                    {message.role === 'model' ? (
-                      <div className="markdown-content">
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          rehypePlugins={[rehypeHighlight]}
-                          components={{
-                            pre: ({ children, ...props }) => {
-                              // Find code element in children
-                              // child.type can be 'code' string or a function/component
-                              const findCodeChild = (
-                                node: React.ReactNode
-                              ): {
-                                className?: string;
-                                children?: React.ReactNode;
-                              } | null => {
-                                if (!React.isValidElement(node)) {
-                                  return null;
-                                }
+                <div className="max-w-[85%] space-y-2">
+                  {/* Tool Calls Card (shown before text response for model messages) */}
+                  {message.role === 'model' &&
+                    message.toolCalls &&
+                    message.toolCalls.length > 0 && <ToolCallList toolCalls={message.toolCalls} />}
 
-                                // Check if it's a code element (type can be string 'code' or function)
-                                const nodeType = node.type;
-                                if (
-                                  nodeType === 'code' ||
-                                  (typeof nodeType === 'function' &&
-                                    (
-                                      nodeType as {
-                                        displayName?: string;
-                                      }
-                                    ).displayName === 'code')
-                                ) {
-                                  return node.props as {
+                  {/* Main Message Card */}
+                  {(message.parts[0].text || message.role === 'user') && (
+                    <Card
+                      className={cn(
+                        'border transition-all duration-300',
+                        message.role === 'user'
+                          ? 'border-[oklch(0.5_0.15_280_/_0.3)] bg-gradient-to-br from-[oklch(0.65_0.25_280_/_0.2)] to-[oklch(0.6_0.22_300_/_0.2)]'
+                          : 'border-[oklch(0.25_0.02_260_/_0.4)] bg-[oklch(0.16_0.01_260_/_0.6)]'
+                      )}
+                    >
+                      <CardContent className="p-4">
+                        {message.role === 'model' ? (
+                          <div className="markdown-content">
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              rehypePlugins={[rehypeHighlight]}
+                              components={{
+                                pre: ({ children, ...props }) => {
+                                  // Find code element in children
+                                  // child.type can be 'code' string or a function/component
+                                  const findCodeChild = (
+                                    node: React.ReactNode
+                                  ): {
                                     className?: string;
                                     children?: React.ReactNode;
+                                  } | null => {
+                                    if (!React.isValidElement(node)) {
+                                      return null;
+                                    }
+
+                                    // Check if it's a code element (type can be string 'code' or function)
+                                    const nodeType = node.type;
+                                    if (
+                                      nodeType === 'code' ||
+                                      (typeof nodeType === 'function' &&
+                                        (
+                                          nodeType as {
+                                            displayName?: string;
+                                          }
+                                        ).displayName === 'code')
+                                    ) {
+                                      return node.props as {
+                                        className?: string;
+                                        children?: React.ReactNode;
+                                      };
+                                    }
+
+                                    return null;
                                   };
-                                }
 
-                                return null;
-                              };
+                                  const childrenArray = Array.isArray(children)
+                                    ? children
+                                    : [children];
 
-                              const childrenArray = Array.isArray(children) ? children : [children];
+                                  for (const child of childrenArray) {
+                                    const codeProps = findCodeChild(child);
+                                    if (codeProps) {
+                                      return (
+                                        <CodeBlock codeClassName={codeProps.className} {...props}>
+                                          {codeProps.children}
+                                        </CodeBlock>
+                                      );
+                                    }
+                                  }
 
-                              for (const child of childrenArray) {
-                                const codeProps = findCodeChild(child);
-                                if (codeProps) {
+                                  // Fallback: wrap all pre blocks with CodeBlock for consistency
+                                  return <CodeBlock {...props}>{children}</CodeBlock>;
+                                },
+                                code: ({
+                                  className,
+                                  children,
+                                  ...props
+                                }: React.HTMLAttributes<HTMLElement> & {
+                                  className?: string;
+                                  inline?: boolean;
+                                }) => {
                                   return (
-                                    <CodeBlock codeClassName={codeProps.className} {...props}>
-                                      {codeProps.children}
-                                    </CodeBlock>
+                                    <code className={className} {...props}>
+                                      {children}
+                                    </code>
                                   );
-                                }
-                              }
-
-                              // Fallback: wrap all pre blocks with CodeBlock for consistency
-                              return <CodeBlock {...props}>{children}</CodeBlock>;
-                            },
-                            code: ({
-                              className,
-                              children,
-                              ...props
-                            }: React.HTMLAttributes<HTMLElement> & {
-                              className?: string;
-                              inline?: boolean;
-                            }) => {
-                              return (
-                                <code className={className} {...props}>
-                                  {children}
-                                </code>
-                              );
-                            },
-                          }}
-                        >
-                          {message.parts[0].text}
-                        </ReactMarkdown>
-                      </div>
-                    ) : (
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-                        {message.parts[0].text}
-                      </p>
-                    )}
-                  </CardContent>
-                </Card>
+                                },
+                              }}
+                            >
+                              {message.parts[0].text}
+                            </ReactMarkdown>
+                          </div>
+                        ) : (
+                          <p className="text-sm leading-relaxed break-words whitespace-pre-wrap">
+                            {message.parts[0].text}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
 
                 {message.role === 'user' && (
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.25_0.02_260)]">
@@ -486,9 +624,18 @@ export default function Home() {
                   <CardContent className="p-4">
                     <div className="flex items-center gap-2">
                       <div className="flex gap-1">
-                        <span className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.65_0.25_280)]" style={{ animationDelay: '0ms' }} />
-                        <span className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.7_0.2_200)]" style={{ animationDelay: '150ms' }} />
-                        <span className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.75_0.18_195)]" style={{ animationDelay: '300ms' }} />
+                        <span
+                          className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.65_0.25_280)]"
+                          style={{ animationDelay: '0ms' }}
+                        />
+                        <span
+                          className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.7_0.2_200)]"
+                          style={{ animationDelay: '150ms' }}
+                        />
+                        <span
+                          className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.75_0.18_195)]"
+                          style={{ animationDelay: '300ms' }}
+                        />
                       </div>
                       <span className="text-sm text-[oklch(0.5_0.02_260)]">생각하는 중...</span>
                     </div>

@@ -16,7 +16,7 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         // Text
         'text-foreground placeholder:text-[oklch(0.5_0.02_260)]',
         // Focus states - Glow effect
-        'focus:outline-none focus:border-[oklch(0.65_0.25_280_/_0.6)]',
+        'focus:border-[oklch(0.65_0.25_280_/_0.6)] focus:outline-none',
         'focus:shadow-[0_0_0_3px_oklch(0.65_0.25_280_/_0.15),0_0_20px_oklch(0.65_0.25_280_/_0.2)]',
         'focus:bg-[oklch(0.18_0.01_260_/_0.8)]',
         // Hover
@@ -24,9 +24,9 @@ function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
         // Disabled
         'disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
         // File input
-        'file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground',
+        'file:text-foreground file:border-0 file:bg-transparent file:text-sm file:font-medium',
         // Selection
-        'selection:bg-[oklch(0.65_0.25_280_/_0.3)] selection:text-foreground',
+        'selection:text-foreground selection:bg-[oklch(0.65_0.25_280_/_0.3)]',
         // Invalid state
         'aria-invalid:border-destructive aria-invalid:shadow-[0_0_0_3px_oklch(0.65_0.25_25_/_0.15)]',
         className

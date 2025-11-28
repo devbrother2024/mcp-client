@@ -31,7 +31,9 @@ export function ChatSidebar({
   const { connectionStatus } = useMCP();
 
   // Count connected MCP servers
-  const connectedServersCount = Array.from(connectionStatus.values()).filter((s) => s.connected).length;
+  const connectedServersCount = Array.from(connectionStatus.values()).filter(
+    (s) => s.connected
+  ).length;
 
   const formatDate = (timestamp: number): string => {
     const date = new Date(timestamp);
@@ -108,7 +110,7 @@ export function ChatSidebar({
                 variant="ghost"
                 size="icon-sm"
                 onClick={onToggle}
-                className="text-[oklch(0.6_0.02_260)] hover:text-foreground"
+                className="hover:text-foreground text-[oklch(0.6_0.02_260)]"
                 aria-label="사이드바 닫기"
               >
                 <Menu className="h-5 w-5" />
@@ -120,7 +122,7 @@ export function ChatSidebar({
                 variant="ghost"
                 size="icon"
                 onClick={onToggle}
-                className="w-full text-[oklch(0.6_0.02_260)] hover:text-foreground"
+                className="hover:text-foreground w-full text-[oklch(0.6_0.02_260)]"
                 aria-label="사이드바 열기"
               >
                 <Menu className="h-5 w-5" />
@@ -132,8 +134,7 @@ export function ChatSidebar({
           {isOpen && (
             <div className="space-y-2 border-b border-[oklch(0.25_0.02_260_/_0.4)] px-4 py-4">
               <Button onClick={onCreateRoom} className="w-full" variant="default">
-                <Plus className="mr-2 h-4 w-4" />
-                새 채팅
+                <Plus className="mr-2 h-4 w-4" />새 채팅
               </Button>
               <Link href="/mcp" className="block">
                 <Button variant="outline" className="relative w-full">
@@ -159,7 +160,9 @@ export function ChatSidebar({
                       <MessageSquare className="h-6 w-6 text-[oklch(0.5_0.02_260)]" />
                     </div>
                     <p className="text-sm text-[oklch(0.5_0.02_260)]">채팅방이 없습니다</p>
-                    <p className="mt-1 text-xs text-[oklch(0.4_0.02_260)]">새 채팅을 시작해보세요</p>
+                    <p className="mt-1 text-xs text-[oklch(0.4_0.02_260)]">
+                      새 채팅을 시작해보세요
+                    </p>
                   </div>
                 ) : (
                   rooms.map((room) => (
@@ -168,8 +171,8 @@ export function ChatSidebar({
                       className={cn(
                         'group relative flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all duration-200',
                         currentRoomId === room.id
-                          ? 'bg-gradient-to-r from-[oklch(0.65_0.25_280_/_0.2)] to-[oklch(0.6_0.22_300_/_0.15)] border border-[oklch(0.5_0.15_280_/_0.3)]'
-                          : 'hover:bg-[oklch(0.2_0.01_260_/_0.5)] border border-transparent'
+                          ? 'border border-[oklch(0.5_0.15_280_/_0.3)] bg-gradient-to-r from-[oklch(0.65_0.25_280_/_0.2)] to-[oklch(0.6_0.22_300_/_0.15)]'
+                          : 'border border-transparent hover:bg-[oklch(0.2_0.01_260_/_0.5)]'
                       )}
                       onClick={() => onSelectRoom(room.id)}
                     >
@@ -192,7 +195,9 @@ export function ChatSidebar({
                         <p
                           className={cn(
                             'truncate text-sm font-medium',
-                            currentRoomId === room.id ? 'text-foreground' : 'text-[oklch(0.8_0.01_260)]'
+                            currentRoomId === room.id
+                              ? 'text-foreground'
+                              : 'text-[oklch(0.8_0.01_260)]'
                           )}
                         >
                           {room.title}
@@ -213,7 +218,7 @@ export function ChatSidebar({
                         size="icon-sm"
                         className={cn(
                           'h-7 w-7 shrink-0 opacity-0 transition-all group-hover:opacity-100',
-                          'text-[oklch(0.5_0.02_260)] hover:text-[oklch(0.7_0.2_25)] hover:bg-[oklch(0.3_0.05_25_/_0.2)]'
+                          'text-[oklch(0.5_0.02_260)] hover:bg-[oklch(0.3_0.05_25_/_0.2)] hover:text-[oklch(0.7_0.2_25)]'
                         )}
                         onClick={(e) => handleDelete(e, room.id)}
                         aria-label="채팅방 삭제"

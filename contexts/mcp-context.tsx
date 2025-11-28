@@ -36,9 +36,17 @@ interface MCPContextType {
 
   // MCP operations
   listTools: (serverId: string) => Promise<MCPTool[]>;
-  callTool: (serverId: string, toolName: string, args?: Record<string, unknown>) => Promise<ToolCallResult>;
+  callTool: (
+    serverId: string,
+    toolName: string,
+    args?: Record<string, unknown>
+  ) => Promise<ToolCallResult>;
   listPrompts: (serverId: string) => Promise<MCPPrompt[]>;
-  getPrompt: (serverId: string, promptName: string, args?: Record<string, string>) => Promise<PromptResult>;
+  getPrompt: (
+    serverId: string,
+    promptName: string,
+    args?: Record<string, string>
+  ) => Promise<PromptResult>;
   listResources: (serverId: string) => Promise<MCPResource[]>;
   readResource: (serverId: string, uri: string) => Promise<ResourceContent[]>;
 
@@ -54,7 +62,9 @@ const MCPContext = createContext<MCPContextType | null>(null);
 
 export function MCPProvider({ children }: { children: React.ReactNode }) {
   const [servers, setServers] = useState<MCPServerConfig[]>([]);
-  const [connectionStatus, setConnectionStatus] = useState<Map<string, MCPConnectionStatus>>(new Map());
+  const [connectionStatus, setConnectionStatus] = useState<Map<string, MCPConnectionStatus>>(
+    new Map()
+  );
   const [isLoading, setIsLoading] = useState(false);
   const initialized = useRef(false);
 
@@ -240,7 +250,11 @@ export function MCPProvider({ children }: { children: React.ReactNode }) {
 
   // Call tool
   const callTool = useCallback(
-    async (serverId: string, toolName: string, args?: Record<string, unknown>): Promise<ToolCallResult> => {
+    async (
+      serverId: string,
+      toolName: string,
+      args?: Record<string, unknown>
+    ): Promise<ToolCallResult> => {
       const response = await fetch('/api/mcp/tools/call', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -273,7 +287,11 @@ export function MCPProvider({ children }: { children: React.ReactNode }) {
 
   // Get prompt
   const getPrompt = useCallback(
-    async (serverId: string, promptName: string, args?: Record<string, string>): Promise<PromptResult> => {
+    async (
+      serverId: string,
+      promptName: string,
+      args?: Record<string, string>
+    ): Promise<PromptResult> => {
       const response = await fetch('/api/mcp/prompts/get', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -305,19 +323,22 @@ export function MCPProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Read resource
-  const readResource = useCallback(async (serverId: string, uri: string): Promise<ResourceContent[]> => {
-    const response = await fetch('/api/mcp/resources/read', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ serverId, uri }),
-    });
+  const readResource = useCallback(
+    async (serverId: string, uri: string): Promise<ResourceContent[]> => {
+      const response = await fetch('/api/mcp/resources/read', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ serverId, uri }),
+      });
 
-    const result = (await response.json()) as MCPApiResponse<ResourceContent[]>;
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to read resource');
-    }
-    return result.data || [];
-  }, []);
+      const result = (await response.json()) as MCPApiResponse<ResourceContent[]>;
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to read resource');
+      }
+      return result.data || [];
+    },
+    []
+  );
 
   // Export config
   const exportConfig = useCallback(() => {

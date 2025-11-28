@@ -17,8 +17,7 @@ const buttonVariants = cva(
           'border border-[oklch(0.35_0.02_260_/_0.5)] bg-[oklch(0.15_0.01_260_/_0.5)] backdrop-blur-sm text-foreground hover:bg-[oklch(0.2_0.02_280_/_0.3)] hover:border-[oklch(0.5_0.15_280_/_0.5)] hover:shadow-lg hover:shadow-[oklch(0.65_0.25_280_/_0.1)]',
         secondary:
           'bg-[oklch(0.22_0.015_260)] text-secondary-foreground border border-[oklch(0.3_0.02_260_/_0.3)] hover:bg-[oklch(0.28_0.02_260)] hover:border-[oklch(0.4_0.02_260_/_0.5)]',
-        ghost:
-          'text-foreground hover:bg-[oklch(0.25_0.02_260_/_0.5)] hover:text-accent-foreground',
+        ghost: 'text-foreground hover:bg-[oklch(0.25_0.02_260_/_0.5)] hover:text-accent-foreground',
         link: 'text-[oklch(0.75_0.18_195)] underline-offset-4 hover:underline hover:text-[oklch(0.85_0.15_195)]',
         glow: 'bg-gradient-to-r from-[oklch(0.65_0.25_280)] via-[oklch(0.7_0.2_200)] to-[oklch(0.75_0.18_195)] bg-[length:200%_100%] text-white shadow-[0_0_20px_oklch(0.65_0.25_280_/_0.4),0_0_40px_oklch(0.65_0.25_280_/_0.2)] hover:bg-[position:100%_0] hover:shadow-[0_0_30px_oklch(0.75_0.18_195_/_0.5),0_0_60px_oklch(0.75_0.18_195_/_0.25)] active:scale-[0.98]',
         glass:

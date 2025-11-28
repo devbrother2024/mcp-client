@@ -33,7 +33,7 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
       className={cn(
         '@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-2 px-5',
         'has-data-[slot=card-action]:grid-cols-[1fr_auto]',
-        '[.border-b]:pb-5 [.border-b]:border-[oklch(0.3_0.02_260_/_0.3)]',
+        '[.border-b]:border-[oklch(0.3_0.02_260_/_0.3)] [.border-b]:pb-5',
         className
       )}
       {...props}
@@ -55,7 +55,7 @@ function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-description"
-      className={cn('text-[oklch(0.6_0.02_260)] text-sm', className)}
+      className={cn('text-sm text-[oklch(0.6_0.02_260)]', className)}
       {...props}
     />
   );
@@ -81,7 +81,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
       data-slot="card-footer"
       className={cn(
         'flex items-center px-5',
-        '[.border-t]:pt-5 [.border-t]:border-[oklch(0.3_0.02_260_/_0.3)]',
+        '[.border-t]:border-[oklch(0.3_0.02_260_/_0.3)] [.border-t]:pt-5',
         className
       )}
       {...props}
@@ -111,7 +111,7 @@ function GlowCard({ className, ...props }: React.ComponentProps<'div'>) {
 
 function GradientBorderCard({ className, children, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div className="relative p-[1px] rounded-2xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] via-[oklch(0.7_0.2_200)] to-[oklch(0.75_0.18_195)]">
+    <div className="relative rounded-2xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] via-[oklch(0.7_0.2_200)] to-[oklch(0.75_0.18_195)] p-[1px]">
       <div
         data-slot="gradient-border-card"
         className={cn(

@@ -13,7 +13,9 @@ interface MCPConfigDialogProps {
 export function MCPConfigDialog({ onClose }: MCPConfigDialogProps) {
   const { exportConfig, importConfig } = useMCP();
   const [isImporting, setIsImporting] = useState(false);
-  const [importResult, setImportResult] = useState<{ imported: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ imported: number; errors: string[] } | null>(
+    null
+  );
   const [mergeMode, setMergeMode] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

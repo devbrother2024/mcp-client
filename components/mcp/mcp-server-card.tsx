@@ -72,7 +72,9 @@ export function MCPServerCard({
             />
             <CardTitle className="text-base">{server.name}</CardTitle>
           </div>
-          <span className="bg-muted rounded px-2 py-0.5 text-xs font-medium">{getTransportLabel()}</span>
+          <span className="bg-muted rounded px-2 py-0.5 text-xs font-medium">
+            {getTransportLabel()}
+          </span>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -80,11 +82,7 @@ export function MCPServerCard({
           {getConnectionInfo()}
         </p>
 
-        {status?.error && (
-          <p className="text-destructive text-xs">
-            오류: {status.error}
-          </p>
-        )}
+        {status?.error && <p className="text-destructive text-xs">오류: {status.error}</p>}
 
         <div className="flex items-center justify-between">
           <div className="flex gap-1">

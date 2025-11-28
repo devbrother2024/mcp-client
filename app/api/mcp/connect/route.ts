@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if ((config.transportType === 'streamable-http' || config.transportType === 'sse') && !config.url) {
+    if (
+      (config.transportType === 'streamable-http' || config.transportType === 'sse') &&
+      !config.url
+    ) {
       return NextResponse.json<MCPApiResponse<null>>(
         { success: false, error: 'URL is required for HTTP/SSE transport' },
         { status: 400 }

@@ -85,7 +85,13 @@ export function MCPPromptsPanel({ serverId }: MCPPromptsPanelProps) {
       <div className="w-1/3 min-w-[200px]">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="text-sm font-medium">프롬프트 목록</h3>
-          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={fetchPrompts} disabled={isLoading}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={fetchPrompts}
+            disabled={isLoading}
+          >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
@@ -96,20 +102,24 @@ export function MCPPromptsPanel({ serverId }: MCPPromptsPanelProps) {
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           ) : prompts.length === 0 ? (
-            <p className="text-muted-foreground py-4 text-center text-sm">등록된 프롬프트가 없습니다</p>
+            <p className="text-muted-foreground py-4 text-center text-sm">
+              등록된 프롬프트가 없습니다
+            </p>
           ) : (
             <div className="space-y-1">
               {prompts.map((prompt) => (
                 <div
                   key={prompt.name}
-                  className={`cursor-pointer rounded-md p-2 transition-colors hover:bg-accent ${
+                  className={`hover:bg-accent cursor-pointer rounded-md p-2 transition-colors ${
                     selectedPrompt?.name === prompt.name ? 'bg-accent' : ''
                   }`}
                   onClick={() => handleSelectPrompt(prompt)}
                 >
                   <p className="text-sm font-medium">{prompt.name}</p>
                   {prompt.description && (
-                    <p className="text-muted-foreground line-clamp-2 text-xs">{prompt.description}</p>
+                    <p className="text-muted-foreground line-clamp-2 text-xs">
+                      {prompt.description}
+                    </p>
                   )}
                 </div>
               ))}
@@ -169,7 +179,9 @@ export function MCPPromptsPanel({ serverId }: MCPPromptsPanelProps) {
 
               {/* Error */}
               {error && (
-                <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">{error}</div>
+                <div className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
+                  {error}
+                </div>
               )}
 
               {/* Result */}
@@ -183,7 +195,7 @@ export function MCPPromptsPanel({ serverId }: MCPPromptsPanelProps) {
                     {result.messages.map((msg, idx) => (
                       <div key={idx} className="bg-muted rounded-md p-3">
                         <span className="text-xs font-medium uppercase">{msg.role}</span>
-                        <p className="mt-1 whitespace-pre-wrap text-sm">{msg.content.text}</p>
+                        <p className="mt-1 text-sm whitespace-pre-wrap">{msg.content.text}</p>
                       </div>
                     ))}
                   </div>

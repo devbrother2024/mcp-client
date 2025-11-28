@@ -24,7 +24,9 @@ export function getMCPServer(id: string): MCPServerConfig | null {
 }
 
 // Save a new MCP server or update existing
-export function saveMCPServer(config: Omit<MCPServerConfig, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }): MCPServerConfig {
+export function saveMCPServer(
+  config: Omit<MCPServerConfig, 'id' | 'createdAt' | 'updatedAt'> & { id?: string }
+): MCPServerConfig {
   const servers = getMCPServers();
   const now = Date.now();
 
@@ -105,7 +107,10 @@ export function downloadMCPConfig(): void {
 }
 
 // Import servers from JSON
-export function importMCPConfig(jsonString: string, options?: { merge?: boolean }): { imported: number; errors: string[] } {
+export function importMCPConfig(
+  jsonString: string,
+  options?: { merge?: boolean }
+): { imported: number; errors: string[] } {
   const errors: string[] = [];
   let imported = 0;
 
@@ -137,7 +142,10 @@ export function importMCPConfig(jsonString: string, options?: { merge?: boolean 
           continue;
         }
 
-        if ((server.transportType === 'streamable-http' || server.transportType === 'sse') && !server.url) {
+        if (
+          (server.transportType === 'streamable-http' || server.transportType === 'sse') &&
+          !server.url
+        ) {
           errors.push(`HTTP/SSE server "${server.name}" missing URL`);
           continue;
         }
@@ -176,7 +184,10 @@ export function importMCPConfig(jsonString: string, options?: { merge?: boolean 
 }
 
 // Import from file
-export async function importMCPConfigFromFile(file: File, options?: { merge?: boolean }): Promise<{ imported: number; errors: string[] }> {
+export async function importMCPConfigFromFile(
+  file: File,
+  options?: { merge?: boolean }
+): Promise<{ imported: number; errors: string[] }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {

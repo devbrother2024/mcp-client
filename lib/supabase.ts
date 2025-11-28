@@ -20,3 +20,4 @@ export interface DbMessage {
   content: string;
   created_at: string;
 }
+

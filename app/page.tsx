@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, Copy, Check } from 'lucide-react';
+import { Send, Copy, Check, Sparkles, Bot, User } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
@@ -53,30 +53,39 @@ function CodeBlock({
   };
 
   return (
-    <div className="group relative my-2">
-      <pre {...props} className="relative">
-        <code ref={codeRef} className={codeClassName}>
-          {children}
-        </code>
-      </pre>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="bg-background/90 hover:bg-background absolute top-2 right-2 z-10 h-7 w-7 border opacity-100 shadow-sm transition-opacity group-hover:opacity-100"
-        onClick={handleCopy}
-        title="코드 복사"
-      >
-        {copied ? (
-          <Check className="h-3.5 w-3.5 text-green-600" />
-        ) : (
-          <Copy className="h-3.5 w-3.5" />
-        )}
-      </Button>
-      {language && (
-        <div className="text-muted-foreground bg-background/90 absolute top-2 left-2 z-10 rounded border px-1.5 py-0.5 text-xs shadow-sm">
-          {language}
+    <div className="group relative my-3">
+      <div className="relative overflow-hidden rounded-xl border border-[oklch(0.25_0.02_260_/_0.5)] bg-[oklch(0.1_0.01_260)]">
+        {/* Header bar */}
+        <div className="flex items-center justify-between border-b border-[oklch(0.25_0.02_260_/_0.5)] bg-[oklch(0.12_0.01_260)] px-4 py-2">
+          {language && (
+            <span className="text-xs font-medium text-[oklch(0.6_0.02_260)]">{language}</span>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 gap-1.5 px-2 text-xs text-[oklch(0.6_0.02_260)] hover:text-foreground"
+            onClick={handleCopy}
+            title="코드 복사"
+          >
+            {copied ? (
+              <>
+                <Check className="h-3.5 w-3.5 text-[oklch(0.75_0.18_145)]" />
+                <span>복사됨</span>
+              </>
+            ) : (
+              <>
+                <Copy className="h-3.5 w-3.5" />
+                <span>복사</span>
+              </>
+            )}
+          </Button>
         </div>
-      )}
+        <pre {...props} className="overflow-x-auto p-4">
+          <code ref={codeRef} className={codeClassName}>
+            {children}
+          </code>
+        </pre>
+      </div>
     </div>
   );
 }
@@ -279,17 +288,34 @@ export default function Home() {
   // Show loading state while initializing
   if (isInitializing) {
     return (
-      <div className="bg-background flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="border-primary mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2"></div>
-          <p className="text-muted-foreground">로딩 중...</p>
+      <div className="relative flex h-screen items-center justify-center overflow-hidden bg-background">
+        {/* Background gradient orbs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-40 -top-40 h-80 w-80 rounded-full bg-[oklch(0.65_0.25_280_/_0.15)] blur-[100px]" />
+          <div className="absolute -bottom-40 -right-40 h-80 w-80 rounded-full bg-[oklch(0.75_0.18_195_/_0.15)] blur-[100px]" />
+        </div>
+        <div className="relative z-10 text-center">
+          <div className="relative mx-auto mb-6 h-12 w-12">
+            <div className="absolute inset-0 animate-ping rounded-full bg-[oklch(0.65_0.25_280_/_0.3)]" />
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[oklch(0.65_0.25_280)] to-[oklch(0.75_0.18_195)]">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+          </div>
+          <p className="text-[oklch(0.6_0.02_260)]">로딩 중...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-background flex h-screen overflow-hidden">
+    <div className="relative flex h-screen overflow-hidden bg-background">
+      {/* Background gradient effects */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-60 top-1/4 h-[500px] w-[500px] rounded-full bg-[oklch(0.65_0.25_280_/_0.08)] blur-[120px]" />
+        <div className="absolute -right-60 bottom-1/4 h-[500px] w-[500px] rounded-full bg-[oklch(0.75_0.18_195_/_0.08)] blur-[120px]" />
+        <div className="absolute left-1/2 top-0 h-[300px] w-[800px] -translate-x-1/2 rounded-full bg-[oklch(0.7_0.2_200_/_0.05)] blur-[100px]" />
+      </div>
+
       {/* Sidebar */}
       <ChatSidebar
         isOpen={isSidebarOpen}
@@ -304,36 +330,63 @@ export default function Home() {
       {/* Main Content */}
       <div
         className={cn(
-          'flex h-screen min-w-0 flex-1 flex-col',
-          isSidebarOpen ? 'lg:ml-64' : 'lg:ml-16'
+          'relative z-10 flex h-screen min-w-0 flex-1 flex-col',
+          isSidebarOpen ? 'lg:ml-72' : 'lg:ml-16'
         )}
       >
         {/* Header */}
-        <div className="flex shrink-0 items-center justify-between border-b px-4 py-3">
-          <h1 className="text-xl font-semibold">AI 채팅</h1>
+        <div className="flex shrink-0 items-center justify-between border-b border-[oklch(0.25_0.02_260_/_0.5)] bg-[oklch(0.13_0.005_260_/_0.8)] px-6 py-4 backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] to-[oklch(0.75_0.18_195)]">
+              <Sparkles className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold tracking-tight">AI 채팅</h1>
+              <p className="text-xs text-[oklch(0.5_0.02_260)]">MCP Client</p>
+            </div>
+          </div>
         </div>
 
         {/* Messages Area */}
-        <ScrollArea className="flex-1 overflow-y-auto px-4 py-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
+        <ScrollArea className="flex-1 overflow-y-auto" ref={scrollAreaRef}>
+          <div className="mx-auto max-w-3xl space-y-6 px-6 py-8">
             {messages.length === 0 && (
-              <div className="text-muted-foreground py-12 text-center">
-                <p className="mb-2 text-lg">안녕하세요! 무엇을 도와드릴까요?</p>
-                <p className="text-sm">메시지를 입력하고 전송하세요.</p>
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 animate-pulse rounded-full bg-[oklch(0.65_0.25_280_/_0.2)] blur-xl" />
+                  <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] via-[oklch(0.7_0.2_200)] to-[oklch(0.75_0.18_195)]">
+                    <Sparkles className="h-10 w-10 text-white" />
+                  </div>
+                </div>
+                <h2 className="mb-2 text-xl font-semibold">안녕하세요!</h2>
+                <p className="text-center text-[oklch(0.55_0.02_260)]">
+                  무엇을 도와드릴까요?
+                  <br />
+                  메시지를 입력하고 전송하세요.
+                </p>
               </div>
             )}
 
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={cn('flex gap-4', message.role === 'user' ? 'justify-end' : 'justify-start')}
               >
+                {message.role === 'model' && (
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] to-[oklch(0.75_0.18_195)]">
+                    <Bot className="h-5 w-5 text-white" />
+                  </div>
+                )}
+
                 <Card
-                  className={`max-w-[80%] ${
-                    message.role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                  }`}
+                  className={cn(
+                    'max-w-[85%] border transition-all duration-300',
+                    message.role === 'user'
+                      ? 'bg-gradient-to-br from-[oklch(0.65_0.25_280_/_0.2)] to-[oklch(0.6_0.22_300_/_0.2)] border-[oklch(0.5_0.15_280_/_0.3)]'
+                      : 'bg-[oklch(0.16_0.01_260_/_0.6)] border-[oklch(0.25_0.02_260_/_0.4)]'
+                  )}
                 >
-                  <CardContent className="p-3">
+                  <CardContent className="p-4">
                     {message.role === 'model' ? (
                       <div className="markdown-content">
                         <ReactMarkdown
@@ -409,20 +462,36 @@ export default function Home() {
                         </ReactMarkdown>
                       </div>
                     ) : (
-                      <p className="text-sm wrap-break-word whitespace-pre-wrap">
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
                         {message.parts[0].text}
                       </p>
                     )}
                   </CardContent>
                 </Card>
+
+                {message.role === 'user' && (
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[oklch(0.25_0.02_260)]">
+                    <User className="h-5 w-5 text-[oklch(0.7_0.02_260)]" />
+                  </div>
+                )}
               </div>
             ))}
 
             {isLoading && (
-              <div className="flex justify-start">
-                <Card className="bg-muted max-w-[80%]">
-                  <CardContent className="p-3">
-                    <p className="text-muted-foreground text-sm">입력 중...</p>
+              <div className="flex gap-4">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[oklch(0.65_0.25_280)] to-[oklch(0.75_0.18_195)]">
+                  <Bot className="h-5 w-5 text-white" />
+                </div>
+                <Card className="max-w-[85%] border border-[oklch(0.25_0.02_260_/_0.4)] bg-[oklch(0.16_0.01_260_/_0.6)]">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-2">
+                      <div className="flex gap-1">
+                        <span className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.65_0.25_280)]" style={{ animationDelay: '0ms' }} />
+                        <span className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.7_0.2_200)]" style={{ animationDelay: '150ms' }} />
+                        <span className="h-2 w-2 animate-bounce rounded-full bg-[oklch(0.75_0.18_195)]" style={{ animationDelay: '300ms' }} />
+                      </div>
+                      <span className="text-sm text-[oklch(0.5_0.02_260)]">생각하는 중...</span>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
@@ -430,9 +499,17 @@ export default function Home() {
 
             {error && (
               <div className="flex justify-center">
-                <Card className="border-destructive max-w-[80%]">
-                  <CardContent className="p-3">
-                    <p className="text-destructive text-sm">{error}</p>
+                <Card className="max-w-[85%] border border-[oklch(0.5_0.2_25_/_0.4)] bg-[oklch(0.2_0.05_25_/_0.2)]">
+                  <CardContent className="p-4">
+                    <p className="text-sm text-[oklch(0.7_0.2_25)]">{error}</p>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2 text-xs"
+                      onClick={() => setError(null)}
+                    >
+                      닫기
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
@@ -443,21 +520,33 @@ export default function Home() {
         </ScrollArea>
 
         {/* Input Area */}
-        <div className="shrink-0 border-t px-4 py-4">
-          <div className="flex gap-2">
-            <Input
-              ref={inputRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onInput={(e) => setInput((e.target as HTMLInputElement).value)}
-              onKeyPress={handleKeyPress}
-              placeholder="메시지를 입력하세요..."
-              disabled={isLoading}
-              className="flex-1"
-            />
-            <Button onClick={handleSend} disabled={isLoading} size="icon">
-              <Send className="h-4 w-4" />
-            </Button>
+        <div className="shrink-0 border-t border-[oklch(0.25_0.02_260_/_0.5)] bg-[oklch(0.13_0.005_260_/_0.8)] px-6 py-5 backdrop-blur-xl">
+          <div className="mx-auto max-w-3xl">
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Input
+                  ref={inputRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onInput={(e) => setInput((e.target as HTMLInputElement).value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="메시지를 입력하세요..."
+                  disabled={isLoading}
+                  className="pr-4"
+                />
+              </div>
+              <Button
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+                size="icon"
+                className="h-11 w-11"
+              >
+                <Send className="h-5 w-5" />
+              </Button>
+            </div>
+            <p className="mt-2 text-center text-xs text-[oklch(0.45_0.02_260)]">
+              AI는 실수할 수 있습니다. 중요한 정보는 확인하세요.
+            </p>
           </div>
         </div>
       </div>

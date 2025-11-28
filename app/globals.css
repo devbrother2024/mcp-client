@@ -3,11 +3,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* =========================================
+   미래지향적 다크 테마 - Futuristic Dark Theme
+   Vercel / Linear / Arc 인스파이어
+   ========================================= */
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Press Start 2P', cursive;
-  --font-mono: 'Space Mono', monospace;
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -41,159 +46,228 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --font-serif: 'VT323', monospace;
-  --radius: 0rem;
-  --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
-  --tracking-tight: calc(var(--tracking-normal) - 0.025em);
-  --tracking-wide: calc(var(--tracking-normal) + 0.025em);
-  --tracking-wider: calc(var(--tracking-normal) + 0.05em);
-  --tracking-widest: calc(var(--tracking-normal) + 0.1em);
-  --tracking-normal: var(--tracking-normal);
-  --shadow-2xl: var(--shadow-2xl);
-  --shadow-xl: var(--shadow-xl);
-  --shadow-lg: var(--shadow-lg);
-  --shadow-md: var(--shadow-md);
-  --shadow: var(--shadow);
-  --shadow-sm: var(--shadow-sm);
-  --shadow-xs: var(--shadow-xs);
-  --shadow-2xs: var(--shadow-2xs);
-  --spacing: var(--spacing);
-  --letter-spacing: var(--letter-spacing);
-  --shadow-offset-y: var(--shadow-offset-y);
-  --shadow-offset-x: var(--shadow-offset-x);
-  --shadow-spread: var(--shadow-spread);
-  --shadow-blur: var(--shadow-blur);
-  --shadow-opacity: var(--shadow-opacity);
-  --color-shadow-color: var(--shadow-color);
   --color-destructive-foreground: var(--destructive-foreground);
 }
 
 :root {
-  --radius: 0rem;
-  --background: oklch(0.9067 0 0);
-  --foreground: oklch(0.2178 0 0);
-  --card: oklch(0.8699 0 0);
-  --card-foreground: oklch(0.2178 0 0);
-  --popover: oklch(0.8328 0 0);
-  --popover-foreground: oklch(0.2178 0 0);
-  --primary: oklch(0.6048 0.2166 257.2136);
+  /* 다크 모드 기본 적용 */
+  --radius: 0.75rem;
+  
+  /* 배경 - 깊은 다크 그레이 */
+  --background: oklch(0.13 0.005 260);
+  --foreground: oklch(0.95 0.01 260);
+  
+  /* 카드 - 반투명 글래스 */
+  --card: oklch(0.18 0.008 260 / 0.8);
+  --card-foreground: oklch(0.95 0.01 260);
+  
+  /* 팝오버 */
+  --popover: oklch(0.16 0.01 260 / 0.95);
+  --popover-foreground: oklch(0.95 0.01 260);
+  
+  /* Primary - 사이버 퍼플 → 핑크 그라데이션 */
+  --primary: oklch(0.65 0.25 280);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.5243 0 0);
-  --secondary-foreground: oklch(1 0 0);
-  --muted: oklch(0.7572 0 0);
-  --muted-foreground: oklch(0.4091 0 0);
-  --accent: oklch(0.8868 0.1822 95.3305);
-  --accent-foreground: oklch(0.2178 0 0);
-  --destructive: oklch(0.6602 0.2294 35.4025);
-  --border: oklch(0.6334 0 0);
-  --input: oklch(0.9551 0 0);
-  --ring: oklch(0.6048 0.2166 257.2136);
-  --chart-1: oklch(0.6962 0.1955 32.3214);
-  --chart-2: oklch(0.588 0.0993 245.7394);
-  --chart-3: oklch(0.684 0.144 154.999);
-  --chart-4: oklch(0.8868 0.1822 95.3305);
-  --chart-5: oklch(0.6269 0.158 296.6718);
-  --sidebar: oklch(0.7058 0 0);
-  --sidebar-foreground: oklch(0.2178 0 0);
-  --sidebar-primary: oklch(0.4675 0.1639 256.6956);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.8442 0.1722 84.9338);
-  --sidebar-accent-foreground: oklch(0.2178 0 0);
-  --sidebar-border: oklch(0.5452 0 0);
-  --sidebar-ring: oklch(0.4675 0.1639 256.6956);
+  
+  /* Secondary - 서브틀 다크 */
+  --secondary: oklch(0.25 0.015 260);
+  --secondary-foreground: oklch(0.9 0.01 260);
+  
+  /* Muted - 은은한 회색 */
+  --muted: oklch(0.22 0.01 260);
+  --muted-foreground: oklch(0.65 0.02 260);
+  
+  /* Accent - 네온 시안 */
+  --accent: oklch(0.75 0.18 195);
+  --accent-foreground: oklch(0.1 0.005 260);
+  
+  /* Destructive - 네온 레드 */
+  --destructive: oklch(0.65 0.25 25);
   --destructive-foreground: oklch(1 0 0);
-  --font-sans: 'Press Start 2P', cursive;
-  --font-serif: 'VT323', monospace;
-  --font-mono: 'Space Mono', monospace;
-  --shadow-color: #000000;
-  --shadow-opacity: 0.2;
-  --shadow-blur: 0.2rem;
-  --shadow-spread: 0rem;
-  --shadow-offset-x: 0.1rem;
-  --shadow-offset-y: 0.1rem;
-  --letter-spacing: 0.05em;
-  --spacing: 0.25rem;
-  --shadow-2xs: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.1);
-  --shadow-xs: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.1);
-  --shadow-sm: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2), 0.1rem 1px 2px -1px hsl(0 0% 0% / 0.2);
-  --shadow: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2), 0.1rem 1px 2px -1px hsl(0 0% 0% / 0.2);
-  --shadow-md: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2), 0.1rem 2px 4px -1px hsl(0 0% 0% / 0.2);
-  --shadow-lg: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2), 0.1rem 4px 6px -1px hsl(0 0% 0% / 0.2);
-  --shadow-xl:
-    0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2), 0.1rem 8px 10px -1px hsl(0 0% 0% / 0.2);
-  --shadow-2xl: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.5);
-  --tracking-normal: 0.05em;
+  
+  /* Border - 미묘한 글로우 */
+  --border: oklch(0.3 0.02 260 / 0.5);
+  --input: oklch(0.2 0.01 260);
+  --ring: oklch(0.7 0.2 280);
+  
+  /* 차트 색상 - 네온 팔레트 */
+  --chart-1: oklch(0.75 0.22 330);
+  --chart-2: oklch(0.75 0.18 195);
+  --chart-3: oklch(0.8 0.2 145);
+  --chart-4: oklch(0.85 0.18 85);
+  --chart-5: oklch(0.7 0.22 280);
+  
+  /* 사이드바 - 더 어두운 톤 */
+  --sidebar: oklch(0.11 0.008 260 / 0.95);
+  --sidebar-foreground: oklch(0.9 0.01 260);
+  --sidebar-primary: oklch(0.65 0.25 280);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.25 0.02 280);
+  --sidebar-accent-foreground: oklch(0.95 0.01 260);
+  --sidebar-border: oklch(0.25 0.02 260 / 0.5);
+  --sidebar-ring: oklch(0.7 0.2 280);
+  
+  /* 폰트 */
+  --font-sans: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
 }
 
+/* 다크 모드 기본 적용 */
 .dark {
-  --background: oklch(0.2931 0 0);
-  --foreground: oklch(0.9067 0 0);
-  --card: oklch(0.3485 0 0);
-  --card-foreground: oklch(0.9067 0 0);
-  --popover: oklch(0.4091 0 0);
-  --popover-foreground: oklch(0.9067 0 0);
-  --primary: oklch(0.6045 0.1074 183.385);
+  --radius: 0.75rem;
+  --background: oklch(0.13 0.005 260);
+  --foreground: oklch(0.95 0.01 260);
+  --card: oklch(0.18 0.008 260 / 0.8);
+  --card-foreground: oklch(0.95 0.01 260);
+  --popover: oklch(0.16 0.01 260 / 0.95);
+  --popover-foreground: oklch(0.95 0.01 260);
+  --primary: oklch(0.65 0.25 280);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.7572 0 0);
-  --secondary-foreground: oklch(0.2178 0 0);
-  --muted: oklch(0.4748 0 0);
-  --muted-foreground: oklch(0.7572 0 0);
-  --accent: oklch(0.9285 0.1803 102.4974);
-  --accent-foreground: oklch(0.2178 0 0);
-  --destructive: oklch(0.6427 0.2153 28.8057);
-  --border: oklch(0.5624 0 0);
-  --input: oklch(0.2393 0 0);
-  --ring: oklch(0.6045 0.1074 183.385);
-  --chart-1: oklch(0.6962 0.1955 32.3214);
-  --chart-2: oklch(0.588 0.0993 245.7394);
-  --chart-3: oklch(0.684 0.144 154.999);
-  --chart-4: oklch(0.8868 0.1822 95.3305);
-  --chart-5: oklch(0.6269 0.158 296.6718);
-  --sidebar: oklch(0.2178 0 0);
-  --sidebar-foreground: oklch(0.9067 0 0);
-  --sidebar-primary: oklch(0.5166 0.0931 181.0803);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.8442 0.1722 84.9338);
-  --sidebar-accent-foreground: oklch(0.2178 0 0);
-  --sidebar-border: oklch(0.3791 0 0);
-  --sidebar-ring: oklch(0.5166 0.0931 181.0803);
+  --secondary: oklch(0.25 0.015 260);
+  --secondary-foreground: oklch(0.9 0.01 260);
+  --muted: oklch(0.22 0.01 260);
+  --muted-foreground: oklch(0.65 0.02 260);
+  --accent: oklch(0.75 0.18 195);
+  --accent-foreground: oklch(0.1 0.005 260);
+  --destructive: oklch(0.65 0.25 25);
   --destructive-foreground: oklch(1 0 0);
-  --radius: 0rem;
-  --font-sans: 'Press Start 2P', cursive;
-  --font-serif: 'VT323', monospace;
-  --font-mono: 'Space Mono', monospace;
-  --shadow-color: #000000;
-  --shadow-opacity: 0.4;
-  --shadow-blur: 0.2rem;
-  --shadow-spread: 0rem;
-  --shadow-offset-x: 0.1rem;
-  --shadow-offset-y: 0.1rem;
-  --letter-spacing: 0.05em;
-  --spacing: 0.25rem;
-  --shadow-2xs: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2);
-  --shadow-xs: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.2);
-  --shadow-sm: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.4), 0.1rem 1px 2px -1px hsl(0 0% 0% / 0.4);
-  --shadow: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.4), 0.1rem 1px 2px -1px hsl(0 0% 0% / 0.4);
-  --shadow-md: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.4), 0.1rem 2px 4px -1px hsl(0 0% 0% / 0.4);
-  --shadow-lg: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.4), 0.1rem 4px 6px -1px hsl(0 0% 0% / 0.4);
-  --shadow-xl:
-    0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 0.4), 0.1rem 8px 10px -1px hsl(0 0% 0% / 0.4);
-  --shadow-2xl: 0.1rem 0.1rem 0.2rem 0rem hsl(0 0% 0% / 1);
+  --border: oklch(0.3 0.02 260 / 0.5);
+  --input: oklch(0.2 0.01 260);
+  --ring: oklch(0.7 0.2 280);
+  --sidebar: oklch(0.11 0.008 260 / 0.95);
+  --sidebar-foreground: oklch(0.9 0.01 260);
+  --sidebar-primary: oklch(0.65 0.25 280);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.25 0.02 280);
+  --sidebar-accent-foreground: oklch(0.95 0.01 260);
+  --sidebar-border: oklch(0.25 0.02 260 / 0.5);
+  --sidebar-ring: oklch(0.7 0.2 280);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+  
+  html {
+    color-scheme: dark;
+  }
+  
   body {
-    @apply bg-background text-foreground;
-    letter-spacing: var(--tracking-normal);
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
 }
 
-/* Markdown styles */
+/* =========================================
+   글로벌 유틸리티 클래스
+   ========================================= */
+
+/* 그라데이션 텍스트 */
+.gradient-text {
+  @apply bg-clip-text text-transparent;
+  background-image: linear-gradient(135deg, 
+    oklch(0.75 0.22 280) 0%, 
+    oklch(0.75 0.18 195) 50%, 
+    oklch(0.8 0.2 145) 100%
+  );
+}
+
+/* 글래스모피즘 효과 */
+.glass {
+  @apply backdrop-blur-xl;
+  background: oklch(0.15 0.01 260 / 0.7);
+  border: 1px solid oklch(0.3 0.02 260 / 0.3);
+}
+
+.glass-subtle {
+  @apply backdrop-blur-md;
+  background: oklch(0.15 0.01 260 / 0.5);
+  border: 1px solid oklch(0.3 0.02 260 / 0.2);
+}
+
+/* 글로우 효과 */
+.glow {
+  box-shadow: 
+    0 0 20px oklch(0.65 0.25 280 / 0.3),
+    0 0 40px oklch(0.65 0.25 280 / 0.1);
+}
+
+.glow-cyan {
+  box-shadow: 
+    0 0 20px oklch(0.75 0.18 195 / 0.3),
+    0 0 40px oklch(0.75 0.18 195 / 0.1);
+}
+
+.glow-subtle {
+  box-shadow: 0 0 30px oklch(0.65 0.25 280 / 0.15);
+}
+
+/* 그라데이션 보더 */
+.gradient-border {
+  position: relative;
+  background: oklch(0.15 0.01 260);
+  border-radius: var(--radius);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, 
+    oklch(0.65 0.25 280) 0%, 
+    oklch(0.75 0.18 195) 50%,
+    oklch(0.8 0.2 145) 100%
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* 애니메이션 그라데이션 배경 */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+/* 펄스 글로우 */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px oklch(0.65 0.25 280 / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px oklch(0.65 0.25 280 / 0.5);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* =========================================
+   Markdown 콘텐츠 스타일
+   ========================================= */
+
 .markdown-content {
-  @apply text-sm;
+  @apply text-sm leading-relaxed;
 }
 
 .markdown-content h1,
@@ -202,7 +276,7 @@
 .markdown-content h4,
 .markdown-content h5,
 .markdown-content h6 {
-  @apply mt-4 mb-2 font-semibold;
+  @apply mt-6 mb-3 font-semibold tracking-tight;
 }
 
 .markdown-content h1 {
@@ -218,12 +292,12 @@
 }
 
 .markdown-content p {
-  @apply mb-2;
+  @apply mb-3 leading-relaxed;
 }
 
 .markdown-content ul,
 .markdown-content ol {
-  @apply mb-2 ml-6;
+  @apply mb-3 ml-6;
 }
 
 .markdown-content ul {
@@ -235,61 +309,87 @@
 }
 
 .markdown-content li {
-  @apply mb-1;
+  @apply mb-1.5;
 }
 
 .markdown-content blockquote {
-  @apply border-muted-foreground/30 my-2 border-l-4 pl-4 italic;
+  @apply my-4 border-l-2 pl-4 italic;
+  border-color: oklch(0.65 0.25 280 / 0.5);
+  color: oklch(0.7 0.02 260);
 }
 
 .markdown-content a {
-  @apply text-primary underline;
+  @apply font-medium underline decoration-1 underline-offset-2 transition-colors;
+  color: oklch(0.75 0.18 195);
+}
+
+.markdown-content a:hover {
+  color: oklch(0.85 0.15 195);
 }
 
 .markdown-content table {
-  @apply border-border my-2 border-collapse border;
+  @apply my-4 w-full border-collapse overflow-hidden rounded-lg;
 }
 
 .markdown-content th,
 .markdown-content td {
-  @apply border-border border px-3 py-2;
+  @apply px-4 py-2.5 text-left;
+  border: 1px solid oklch(0.3 0.02 260 / 0.3);
 }
 
 .markdown-content th {
-  @apply bg-muted font-semibold;
+  @apply font-medium;
+  background: oklch(0.2 0.01 260 / 0.5);
 }
 
-/* Code block styles */
+.markdown-content tr:hover td {
+  background: oklch(0.2 0.01 260 / 0.3);
+}
+
+/* =========================================
+   코드 블록 스타일 - Futuristic
+   ========================================= */
+
 .markdown-content pre {
-  @apply relative my-2 overflow-hidden rounded-md;
+  @apply relative my-4 overflow-hidden rounded-xl;
+  background: oklch(0.1 0.01 260);
+  border: 1px solid oklch(0.25 0.02 260 / 0.5);
 }
 
 .markdown-content pre code {
-  @apply block overflow-x-auto p-4;
+  @apply block overflow-x-auto p-4 text-sm;
+  font-family: var(--font-mono);
 }
 
 .markdown-content code {
-  @apply bg-muted rounded px-1.5 py-0.5 font-mono text-sm;
+  @apply rounded-md px-1.5 py-0.5 text-sm;
+  font-family: var(--font-mono);
+  background: oklch(0.2 0.02 280 / 0.3);
+  color: oklch(0.85 0.15 195);
 }
 
 .markdown-content pre code {
   @apply bg-transparent p-0;
+  color: oklch(0.9 0.01 260);
 }
 
-/* Highlight.js theme - using a neutral theme */
+/* Highlight.js - Futuristic Dark Theme */
 .hljs {
-  @apply bg-muted text-foreground;
+  background: transparent;
+  color: oklch(0.9 0.01 260);
 }
 
 .hljs-comment,
 .hljs-quote {
-  @apply text-muted-foreground italic;
+  color: oklch(0.5 0.02 260);
+  font-style: italic;
 }
 
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-subst {
-  @apply text-primary font-semibold;
+  color: oklch(0.75 0.22 280);
+  font-weight: 500;
 }
 
 .hljs-number,
@@ -297,27 +397,89 @@
 .hljs-variable,
 .hljs-template-variable,
 .hljs-tag .hljs-attr {
-  @apply text-chart-1;
+  color: oklch(0.8 0.18 85);
 }
 
 .hljs-string,
 .hljs-doctag {
-  @apply text-chart-2;
+  color: oklch(0.8 0.2 145);
 }
 
 .hljs-title,
 .hljs-section,
 .hljs-selector-id {
-  @apply text-chart-3 font-semibold;
+  color: oklch(0.75 0.18 195);
+  font-weight: 600;
 }
 
 .hljs-type,
 .hljs-class .hljs-title {
-  @apply text-chart-4;
+  color: oklch(0.85 0.15 60);
 }
 
 .hljs-tag,
 .hljs-name,
 .hljs-attribute {
-  @apply text-chart-5;
+  color: oklch(0.75 0.22 330);
+}
+
+.hljs-built_in,
+.hljs-builtin-name {
+  color: oklch(0.75 0.18 195);
+}
+
+.hljs-function .hljs-title {
+  color: oklch(0.8 0.18 200);
+}
+
+.hljs-params {
+  color: oklch(0.85 0.12 60);
+}
+
+/* =========================================
+   스크롤바 스타일
+   ========================================= */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: oklch(0.35 0.02 260 / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.45 0.02 260 / 0.7);
+}
+
+/* =========================================
+   선택 스타일
+   ========================================= */
+
+::selection {
+  background: oklch(0.65 0.25 280 / 0.3);
+  color: oklch(0.95 0.01 260);
+}
+
+/* =========================================
+   포커스 스타일
+   ========================================= */
+
+:focus-visible {
+  outline: 2px solid oklch(0.65 0.25 280 / 0.5);
+  outline-offset: 2px;
+}
+
+/* =========================================
+   트랜지션 기본값
+   ========================================= */
+
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }

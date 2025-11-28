@@ -133,3 +133,4 @@ function transformRoom(room: DbChatRoom, messages: DbMessage[]) {
     updatedAt: new Date(room.updated_at).getTime(),
   };
 }
+

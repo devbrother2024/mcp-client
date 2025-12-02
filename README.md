@@ -25,7 +25,7 @@ Model Context Protocol(MCP)을 지원하는 AI 채팅 클라이언트입니다. 
 ## 📋 요구사항
 
 - **Node.js**: LTS 버전 권장 (v18 이상)
-- **패키지 매니저**: pnpm (권장)
+- **패키지 매니저**: pnpm (권장) 또는 npm
 - **API 키**: Gemini API Key, Supabase 프로젝트
 
 ## 🚀 시작하기
@@ -40,7 +40,11 @@ cd mcp-client
 ### 2. 의존성 설치
 
 ```bash
+# pnpm (권장)
 pnpm install
+
+# 또는 npm
+npm install
 ```
 
 ### 3. 환경 변수 설정
@@ -117,7 +121,11 @@ supabase db push
 ### 5. 개발 서버 실행
 
 ```bash
+# pnpm
 pnpm dev
+
+# 또는 npm
+npm run dev
 ```
 
 브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 확인합니다.
@@ -175,14 +183,14 @@ mcp-client/
 
 ## 🔧 사용 가능한 스크립트
 
-| 명령어 | 설명 |
-|--------|------|
-| `pnpm dev` | 개발 서버 실행 (Turbopack) |
-| `pnpm build` | 프로덕션 빌드 |
-| `pnpm start` | 프로덕션 서버 실행 |
-| `pnpm lint` | ESLint 검사 |
-| `pnpm format` | Prettier로 코드 포맷팅 |
-| `pnpm format:check` | 포맷팅 검사 |
+| pnpm | npm | 설명 |
+|------|-----|------|
+| `pnpm dev` | `npm run dev` | 개발 서버 실행 (Turbopack) |
+| `pnpm build` | `npm run build` | 프로덕션 빌드 |
+| `pnpm start` | `npm run start` | 프로덕션 서버 실행 |
+| `pnpm lint` | `npm run lint` | ESLint 검사 |
+| `pnpm format` | `npm run format` | Prettier로 코드 포맷팅 |
+| `pnpm format:check` | `npm run format:check` | 포맷팅 검사 |
 
 ## 🔌 MCP 서버 연결
 
